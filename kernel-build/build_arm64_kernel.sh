@@ -23,7 +23,7 @@ KERNEL_DIR=$(pwd)
 ARCH="${ARCH:-arm64}"
 CROSS_COMPILE="${CROSS_COMPILE:-aarch64-linux-gnu-}"
 CLANG_TRIPLE="${CLANG_TRIPLE:-aarch64-linux-gnu-}"
-JOBS="${JOBS:-$(nproc)}"
+JOBS="${JOBS:-$(( ( $(nproc) + 1 ) / 2 ))}"
 
 DEFAULT_BUILD_TARGETS=("Image" "modules" "dtbs" "vmlinux")
 DEFAULT_COMPILER_MODE="gcc"
