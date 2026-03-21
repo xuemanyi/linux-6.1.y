@@ -1,17 +1,16 @@
-
 # ARM64 Linux Kernel Build Toolkit
 
-一套用于 ARM64 Linux 内核编译的脚本工具，支持：
+A simple toolkit for building ARM64 Linux kernels with:
 
-- GCC / Clang 编译
-- Bear 或 Kernel 原生方式生成 `compile_commands.json`
-- 交互式选择编译模式
-- 输出目录隔离（gcc / clang）
-- 构建日志记录
+- GCC / Clang support
+- `compile_commands.json` via Bear or kernel-native method
+- Interactive build mode
+- Isolated output directories (gcc / clang)
+- Build log generation
 
 ---
 
-## 项目结构
+## Project Structure
 
 ```text
 kernel-build/
@@ -22,9 +21,9 @@ kernel-build/
 
 ---
 
-## 快速开始
+## Quick Start
 
-### 1. 安装环境
+### 1. Setup Environment
 
 ```bash
 chmod +x setup_kernel_build_env.sh build_kernel_arm64.sh
@@ -34,7 +33,7 @@ source ~/.bashrc
 
 ---
 
-### 2. 进入内核源码目录
+### 2. Enter Kernel Source Directory
 
 ```bash
 cd /path/to/linux-kernel
@@ -42,33 +41,33 @@ cd /path/to/linux-kernel
 
 ---
 
-### 3. 编译
+### 3. Build Kernel
 
-#### 交互模式（推荐）
+#### Interactive Mode (Recommended)
 
 ```bash
 /path/to/kernel-build/build_kernel_arm64.sh
 ```
 
-#### 命令行模式
+#### Command Line Mode
 
 ```bash
 # gcc
-./build_kernel_arm64.sh gcc
+./kernel-build/build_kernel_arm64.sh gcc
 
 # clang
-./build_kernel_arm64.sh clang
+./kernel-build/build_kernel_arm64.sh clang
 
 # gcc + bear
-./build_kernel_arm64.sh gcc bear
+./kernel-build/build_kernel_arm64.sh gcc bear
 
 # clang + kernel compile_commands
-./build_kernel_arm64.sh clang kernel
+./kernel-build/build_kernel_arm64.sh clang kernel
 ```
 
 ---
 
-## 参数说明
+## Usage
 
 ```bash
 ./build_kernel_arm64.sh [COMPILER] [CCDB] [TARGETS...]
@@ -79,13 +78,13 @@ cd /path/to/linux-kernel
 * `gcc`
 * `clang`
 
-### CCDB（compile_commands.json）
+### CCDB (compile_commands.json)
 
-* `none`（默认）
+* `none` (default)
 * `bear`
 * `kernel`
 
-### TARGETS（默认）
+### TARGETS (default)
 
 ```text
 Image modules dtbs vmlinux
@@ -93,19 +92,19 @@ Image modules dtbs vmlinux
 
 ---
 
-## 常用示例
+## Common Examples
 
 ```bash
-# GCC 默认构建
+# GCC build
 ./build_kernel_arm64.sh gcc
 
-# Clang 构建 + compile_commands.json
+# Clang + compile_commands.json
 ./build_kernel_arm64.sh clang kernel
 
-# Bear 捕获编译命令
+# Bear mode
 ./build_kernel_arm64.sh gcc bear
 
-# 自定义目标
+# Custom targets
 ./build_kernel_arm64.sh clang kernel Image modules
 
 # menuconfig
@@ -114,7 +113,7 @@ Image modules dtbs vmlinux
 
 ---
 
-## 输出目录
+## Output Directories
 
 ```text
 output-gcc/
@@ -123,7 +122,7 @@ output-clang/
 
 ---
 
-## 关键产物
+## Build Artifacts
 
 ```text
 Image:      output-*/arch/arm64/boot/Image
@@ -144,25 +143,88 @@ ccdb:       output-*/compile_commands.json
 ./build_kernel_arm64.sh clang bear
 ```
 
-### Kernel 原生
+### Kernel Native
 
 ```bash
 ./build_kernel_arm64.sh clang kernel
 ```
 
-（优先 `make compile_commands.json`，失败则回退内核脚本）
+This will:
+
+1. Try:
+
+```bash
+make compile_commands.json
+```
+
+2. Fallback to:
+
+```bash
+python3 scripts/clang-tools/gen_compile_commands.py
+```
 
 ---
 
-## 注意
+## Notes
 
-* 必须在内核源码根目录运行
-* 默认会执行：
+* Must run inside Linux kernel source root
+* Script will run:
 
 ```bash
 make mrproper
 ```
 
-（会清理 `.config`）
+(This cleans `.config` and build artifacts)
+
+---
+
+## Troubleshooting
+
+### Missing gcc
+
+```bash
+sudo apt install gcc-aarch64-linux-gnu
+```
+
+### Missing clang
+
+```bash
+sudo apt install clang lld
+```
+
+### Missing bear
+
+```bash
+sudo apt install bear
+```
+
+### menuconfig error
+
+```bash
+sudo apt install libncurses-dev
+```
+
+---
+
+## Example Workflow
+
+```bash
+./setup_kernel_build_env.sh
+source ~/.bashrc
+
+cd linux/
+../build_kernel_arm64.sh clang kernel
+```
+
+---
+
+## TODO
+
+* Incremental build mode
+* ccache support
+* Auto symlink for compile_commands.json
+* Android / GKI support
+
+```
 
 ---
