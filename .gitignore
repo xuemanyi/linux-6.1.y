@@ -77,6 +77,9 @@ modules.order
 /modules.builtin.ranges
 /modules.nsdeps
 
+# Build logs
+build-logs/
+
 #
 # RPM spec file (make rpm-pkg)
 #
